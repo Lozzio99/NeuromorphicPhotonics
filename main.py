@@ -12,3 +12,5 @@ store_solution_data(test_simulation, filename=filename)
 
 # plot_single_laser_solution(test_simulation)
 load_and_plot(filename=filename, plot_f=plot_single_laser_solution)
+
+

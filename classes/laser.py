@@ -1,11 +1,11 @@
 import numpy as np
 
-from utils.config import INITIAL_STATE, DELTA_OFF, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k
+from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k, FIXED_DELTA, PULSE_OFF
 
 
 class LaserSystem:
 
-    def __init__(self, initial_state=None, delta_function=None, pulse_function=None, noise_function=None):
+    def __init__(self, initial_state=None):
         if initial_state is None:
             initial_state = INITIAL_STATE
 
@@ -14,9 +14,9 @@ class LaserSystem:
         self.y = initial_state['y']       # y system variable
         self.w = initial_state['w']       # w system variable
 
-        self.pulse_f = pulse_function if pulse_function is not None else lambda t: 0
-        self.delta_f = delta_function if delta_function is not None else lambda t: DELTA_OFF
-        self.noise_f = noise_function if noise_function is not None else GAUSSIAN_NOISE_3D
+        self.pulse_f = PULSE_OFF
+        self.delta_f = FIXED_DELTA
+        self.noise_f = GAUSSIAN_NOISE_3D
 
         self.delta = self.delta_f(t=t0)
         self.pulse = self.pulse_f(t=t0)
