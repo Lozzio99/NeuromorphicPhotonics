@@ -34,11 +34,11 @@ def store_solution_data(solution, directory=RESULTS_DIRECTORY, filename='unknown
     print(f"Solution data saved to: {filepath}")
 
 
-def run_single_laser_simulation(laser:LaserSystem, t0=config.t0, tf=config.tf, dt=config.dt, save=False):
+def run_single_system_simulation(system:LaserSystem, t0=config.t0, tf=config.tf, dt=config.dt, save=False):
     t = t0
     time_sequence = np.arange(t0, tf, dt)
     solution = {'t': [t]}
-    state0 = laser.get_state_dict()
+    state0 = system.get_state_dict()
     for var_name, var_value in state0.items(): solution[var_name] = [var_value]
 
     i = 1
@@ -49,9 +49,9 @@ def run_single_laser_simulation(laser:LaserSystem, t0=config.t0, tf=config.tf, d
         t1 = time_sequence[i]
         h = t1 - t
 
-        step_update_state = euler_mayurama_step(laser, t, h)  # step update variables
-        laser.update(step_update_state, t1)                   # update laser to new state and time
-        new_state = laser.get_state_dict()
+        step_update_state = euler_mayurama_step(system, t, h)  # step update variables
+        system.update(step_update_state, t1)                   # update system to new state and time
+        new_state = system.get_state_dict()
         solution['t'].append(t1)
         for var_name, var_value in new_state.items(): solution[var_name].append(var_value)
 

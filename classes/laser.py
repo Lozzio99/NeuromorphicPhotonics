@@ -1,25 +1,26 @@
 import numpy as np
 
-from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k, FIXED_DELTA, PULSE_OFF
+from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k, FIXED_DELTA, PULSE_OFF, \
+    DELTA_OFF
 
 
 class LaserSystem:
 
     def __init__(self, initial_state=None):
-        if initial_state is None:
-            initial_state = INITIAL_STATE
-
-        self.e = initial_state['e']       # complex component of the electrical field
-        self.x = Xf(self.e)               # x system variable
-        self.y = initial_state['y']       # y system variable
-        self.w = initial_state['w']       # w system variable
-
         self.pulse_f = PULSE_OFF
         self.delta_f = FIXED_DELTA
         self.noise_f = GAUSSIAN_NOISE_3D
 
         self.delta = self.delta_f(t=t0)
         self.pulse = self.pulse_f(t=t0)
+
+        if initial_state is None:
+            initial_state = INITIAL_STATE(self.delta)
+
+        self.e = initial_state[0]       # complex component of the electrical field
+        self.x = Xf(self.e)               # x system variable
+        self.y = initial_state[1]       # y system variable
+        self.w = initial_state[2]       # w system variable
 
 
     def get_state_dict(self) -> dict:

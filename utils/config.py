@@ -4,12 +4,12 @@ from numpy.random import normal
 
 # simulation parameters
 t0 = 0
-tf = 1e5
+tf = 2e5
 dt = 0.1
 
 
 # LASER MODEL
-# laser parameters
+# system parameters
 k = 0.7
 A = 1 / k
 alpha = 2
@@ -29,7 +29,7 @@ INITIAL_STATE = lambda delta: [0, _delta, (1-_delta)/k]
 
 FIXED_DELTA = lambda t: _delta
 
-def sinusoidal_delta(t, periods=3, min_delta=1.01, max_delta=1.49):
+def sinusoidal_delta(t, periods=1.5, min_delta=1.01, max_delta=1.49):
     # Map time range -> sine -> positive sine -> delta range
     time = (math.sin((t/tf) * periods * 2 * math.pi) + 1) / 2.0
     return min_delta + time * (max_delta - min_delta)
@@ -50,7 +50,7 @@ Xf = lambda e: (abs(e) ** 2)
 
 
 ## LIF MODEL
-sustained_spike_mode = False
-sustained_duration = 15e3
+spike_mode = 'sustained'
+SUSTAINED_SPIKE_DURATION = 15e3
 
 RESULTS_DIRECTORY = 'results/'
