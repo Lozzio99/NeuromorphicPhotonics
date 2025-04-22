@@ -19,15 +19,13 @@ h = 4
 gamma = 0.004
 epsilon = 0.0001
 
-# initial_state, around OFF fixed point
+# delta system control variable
 DELTA_OFF = 0.95
 DELTA_ALTERNATE = 1.1
+INITIAL_DELTA = DELTA_ALTERNATE
+INITIAL_STATE = lambda delta: [0, INITIAL_DELTA, (1 - INITIAL_DELTA) / k]
 
-# Running value
-_delta = DELTA_ALTERNATE
-INITIAL_STATE = lambda delta: [0, _delta, (1-_delta)/k]
-
-FIXED_DELTA = lambda t: _delta
+FIXED_DELTA = lambda t: INITIAL_DELTA
 
 def sinusoidal_delta(t, periods=1.5, min_delta=1.01, max_delta=1.49):
     # Map time range -> sine -> positive sine -> delta range
@@ -39,7 +37,8 @@ def sinusoidal_delta(t, periods=1.5, min_delta=1.01, max_delta=1.49):
 PULSE_OFF = lambda t: 0
 
 # Noise complex
-sigma = 1 / (510 ** 2)
+# sigma = 1 / (510 ** 2)
+sigma = 1e-3
 GAUSSIAN_NOISE_3D = lambda: multiply(sigma, [normal(0, sqrt(dt)), 0, 0])
 
 # logarithmic amplifier function
