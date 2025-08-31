@@ -1,13 +1,13 @@
 import numpy as np
 
 from classes.laser import LaserSystem
-from utils.config import Xf, sinusoidal_delta, INITIAL_STATE, spike_mode, SUSTAINED_SPIKE_DURATION
+from utils.config import Xf, INITIAL_STATE, spike_mode, SUSTAINED_SPIKE_DURATION, PULSE_OFF, FIXED_DELTA
 
 
 class LIFNeuron(LaserSystem):
-    def __init__(self, threshold=1.0, input_fn=sinusoidal_delta):
-        super().__init__()
-        # LIF core
+    def __init__(self, threshold=1.0, delta_f=FIXED_DELTA, pulse_f=PULSE_OFF):
+        super().__init__(delta_f=delta_f, pulse_f=pulse_f)
+        # LIF core1
         self.threshold = threshold
         self.last_spike_time = -np.inf
         self.spike = False
@@ -22,7 +22,7 @@ class LIFNeuron(LaserSystem):
         else:
             self.sustained_spike_mode = False
 
-        self.delta_f = input_fn
+        self.delta_f = delta_f
         self.update(INITIAL_STATE(self.delta_f(t=0)), t=0)
 
     def update(self, state: list[complex], t: float):

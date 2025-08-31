@@ -23,7 +23,9 @@ def plot_single_laser_solution(solution:dict[object, list[float]]):
     plt.show()
 
 
-def plot_neuron_solution(solution:dict[object, list[float]]):
+def plot_neuron_solution(solution:dict[object, list[float]], input_val:str):
+    assert input_val is not None
+
     ts = solution['t']
     fig, ax = plt.subplots(3, 1, sharex=True, height_ratios=[0.7, 0.15, 0.15])
 
@@ -36,8 +38,8 @@ def plot_neuron_solution(solution:dict[object, list[float]]):
     ax[0].legend(["x(t)", "y(t)", "w(t)"], loc='upper right')
     ax[0].set_title('Single Laser System Variables Solution')
 
-    ax[1].plot(ts, solution['delta'], 'k')
-    ax[1].set_title("Delta value")
+    ax[1].plot(ts, solution[input_val], 'k')
+    ax[1].set_title(f"{input_val.capitalize()} value")
 
     ax[2].plot(ts, solution['binary_state'], 'r')
     ax[2].set_title("Binary Output")
@@ -45,6 +47,12 @@ def plot_neuron_solution(solution:dict[object, list[float]]):
     plt.tight_layout()
     plt.show()
 
+
+def plot_neuron_solution_pulse(solution:dict[object, list[float]]):
+    plot_neuron_solution(solution, input_val='pulse')
+
+def plot_neuron_solution_delta(solution:dict[object, list[float]]):
+    plot_neuron_solution(solution, input_val='delta')
 
 def load_and_plot(filename, plot_f, directory=RESULTS_DIRECTORY):
     loaded = pd.read_csv(directory + filename)

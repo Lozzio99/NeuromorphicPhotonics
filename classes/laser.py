@@ -5,10 +5,9 @@ from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, e
 
 class LaserSystem:
 
-    def __init__(self, initial_state=None):
-        self.pulse_f = PULSE_OFF
-        self.delta_f = FIXED_DELTA
-        self.noise_f = GAUSSIAN_NOISE_3D
+    def __init__(self, initial_state=None, delta_f=FIXED_DELTA, pulse_f=PULSE_OFF):
+        self.pulse_f = pulse_f
+        self.delta_f = delta_f
 
         self.delta = self.delta_f(t=t0)
         self.pulse = self.pulse_f(t=t0)
@@ -16,8 +15,10 @@ class LaserSystem:
         if initial_state is None:
             initial_state = INITIAL_STATE(self.delta)
 
+        self.noise_f = GAUSSIAN_NOISE_3D
+
         self.e = initial_state[0]       # complex component of the electrical field
-        self.x = Xf(self.e)               # x system variable
+        self.x = Xf(self.e)             # x system variable
         self.y = initial_state[1]       # y system variable
         self.w = initial_state[2]       # w system variable
 
