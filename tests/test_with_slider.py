@@ -56,8 +56,7 @@ def plot_neuron_solution(solution: dict[object, list[float]]):
     canvas.draw()
 
 ## delta/pulse : (500, 1500, 100)
-## delta-sustained: (1500, 2500, 100)
-## pulse-sustained:
+## delta/pulse-sustained: (1500, 2500, 100)
 start = 1500
 end = 2500
 res = 100
