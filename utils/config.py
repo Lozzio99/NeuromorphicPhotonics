@@ -64,7 +64,7 @@ Xf = lambda e: (abs(e) ** 2)
 
 
 ## LIF MODEL
-spike_mode = None
+sustained_spike_mode = True
 SUSTAINED_SPIKE_DURATION = 15e3
 
 RESULTS_DIRECTORY = '../results/'

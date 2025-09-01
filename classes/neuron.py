@@ -1,70 +1,59 @@
 import numpy as np
 
 from classes.laser import LaserSystem
-from utils.config import Xf, INITIAL_STATE, spike_mode, SUSTAINED_SPIKE_DURATION, PULSE_OFF, FIXED_DELTA
+from utils.config import Xf, INITIAL_STATE, sustained_spike_mode, PULSE_OFF, FIXED_DELTA
 
 
 class LIFNeuron(LaserSystem):
-    def __init__(self, threshold=1.0, delta_f=FIXED_DELTA, pulse_f=PULSE_OFF):
+    def __init__(self, threshold=1.0, delta_f=FIXED_DELTA, pulse_f=PULSE_OFF, s_spk=sustained_spike_mode):
         super().__init__(delta_f=delta_f, pulse_f=pulse_f)
         # LIF core1
         self.threshold = threshold
-        self.last_spike_time = -np.inf
+        self.spike_start = -np.inf
         self.spike = False
         self.spike_history = []
 
         # Sustained spike behavior
-        if spike_mode == 'sustained':
-            self.sustained_spike_mode = True
-            self.sustained_duration = SUSTAINED_SPIKE_DURATION
-            self._sustained_spike_end = -np.inf
-
-        else:
-            self.sustained_spike_mode = False
+        self.sustained_spike_mode = s_spk
 
         self.delta_f = delta_f
         self.update(INITIAL_STATE(self.delta_f(t=0)), t=0)
 
     def update(self, state: list[complex], t: float):
         super().update(state, t)
-        if self._verify_sustained_spiking(t): return
         self._verify_spiking(t)
 
     def _emit_spike(self, t: float):
-        self.spike = True
-        self.last_spike_time = t
+        if self.spike == False:
+            self.spike = True
+            self.spike_start = t
+
+        # either way,
         self.spike_history.append(t)
 
-    def _verify_sustained_spiking(self, t: float):
-        # Handle sustained spike for when it's still ongoing
-        if self.sustained_spike_mode and self.spike:
-            # if still ongoing
-            if t <= self._sustained_spike_end:
-                self._emit_spike(t)
-                return True
-            # else interrupt
-            else:
-                self.spike = False
-        return False
 
     def _verify_spiking(self, t: float):
-        self.spike = False
-        # Spike trigger condition upon threshold
-        if Xf(self.e) > self.threshold:
-            if self.sustained_spike_mode:
-                # Start the sustained spike if it hasn't yet
-                self._sustained_spike_end = t + self.sustained_duration
+        if Xf(self.e) >= self.threshold:
             # record spike
             self._emit_spike(t)
+            return
+        else:
+            if self.sustained_spike_mode and self.spike:
+                if Xf(self.e) > 1e-4:
+                    self._emit_spike(t)
+                    return
+            self.spike = False
+            self.spike_start = -np.inf
+
 
     def get_state_dict(self) -> dict:
         base_state = super().get_state_dict()
         base_state['binary_state'] = int(self.spike)
-        base_state['last_spike_time'] = self.last_spike_time
+        base_state['spike_start'] = self.spike_start if self.spike else -np.inf
         return base_state
 
     def reset(self):
         self.update(INITIAL_STATE(self.delta_f(t=0)), t=0)
         self.spike = False
-        self.last_spike_time = -np.inf
+        self.spike_start = -np.inf
         self.spike_history.clear()
