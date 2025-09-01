@@ -55,8 +55,13 @@ def plot_neuron_solution(solution: dict[object, list[float]]):
     plt.tight_layout()
     canvas.draw()
 
-
-intervals = [i for i in range(500, 1501, 100)]
+## delta/pulse : (500, 1500, 100)
+## delta-sustained: (1500, 2500, 100)
+## pulse-sustained:
+start = 1500
+end = 2500
+res = 100
+intervals = [i for i in range(start, end+1, res)]
 solutions = {}
 
 for interval in intervals:
@@ -92,7 +97,7 @@ def plot(interval_value):
 def on_interval_change(val):
     plot(int(val))
 
-slider = tk.Scale(root, from_=500, to=1500, resolution=100, orient=tk.HORIZONTAL, variable=interval_var, label="Interval", command=on_interval_change)
+slider = tk.Scale(root, from_=start, to=end, resolution=res, orient=tk.HORIZONTAL, variable=interval_var, label="Interval", command=on_interval_change)
 slider.pack(fill=tk.X, padx=20, pady=20)
 
 plot(interval_var.get())
