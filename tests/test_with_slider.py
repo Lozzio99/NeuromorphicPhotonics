@@ -5,6 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 
 from classes.neuron import LIFNeuron
 from utils import runner
+from utils.config import DELTA_OFF, DELTA_ALTERNATE
 
 # Main Tkinter window
 root = tk.Tk()
@@ -36,14 +37,13 @@ def plot_neuron_solution(solution: dict[object, list[float]]):
     ax[0].legend(["x(t)", "y(t)", "w(t)"], loc='upper right')
     ax[0].set_title('Single Laser System Variables Solution')
 
-    ax[1].plot(ts, solution['pulse'], 'k')
-    ax[1].set_title(f"Pulse value")
+    ax[1].plot(ts, solution['delta'], 'k')
+    ax[1].set_title(f"Delta value")
 
     ax[2].plot(ts, solution['binary_state'], 'r')
     ax[2].set_title("Binary Output")
 
     plt.tight_layout()
-    # plt.show()
     canvas.draw()
 
 
@@ -52,7 +52,7 @@ solutions = {}
 
 for interval in intervals:
 
-    def rectangle_spikes_pulse(t, iv=interval, first=1000, length=200, miv=0, mav=0.05):
+    def rectangle_spikes_delta(t, iv=interval, first=1000, length=200, miv=DELTA_OFF, mav=DELTA_ALTERNATE):
         spike_starts = [first, first + length + iv]
         for spike in spike_starts:
             t_max = spike + length
@@ -60,7 +60,15 @@ for interval in intervals:
                 return mav
         return miv
 
-    single_laser_test = LIFNeuron(pulse_f=rectangle_spikes_pulse)
+    def rectangle_spikes_pulse(t, iv=interval, first=1000, length=200, miv=0, mav=0.1):
+        spike_starts = [first, first + length + iv]
+        for spike in spike_starts:
+            t_max = spike + length
+            if spike <= t < t_max:
+                return mav
+        return miv
+
+    single_laser_test = LIFNeuron(delta_f=rectangle_spikes_delta)
     test_simulation = runner.run_single_system_simulation(single_laser_test)
     solutions[interval] = test_simulation
 
