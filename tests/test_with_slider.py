@@ -22,6 +22,7 @@ toolbar.pack()
 
 interval_var = tk.IntVar(value=1000)  # Default value
 
+test = 'pulse'
 
 def plot_neuron_solution(solution: dict[object, list[float]]):
     for axi in ax:
@@ -32,13 +33,21 @@ def plot_neuron_solution(solution: dict[object, list[float]]):
     ax[0].plot(ts, solution['y'], 'g')
     ax[0].plot(ts, solution['w'], 'b')
 
+    ax[0].hlines(1.0, solution['t'][0], solution['t'][-1], 'k', '--')
+
     ax[0].set_xlabel("t")
 
     ax[0].legend(["x(t)", "y(t)", "w(t)"], loc='upper right')
     ax[0].set_title('Single Laser System Variables Solution')
 
-    ax[1].plot(ts, solution['delta'], 'k')
-    ax[1].set_title(f"Delta value")
+    if test == 'pulse':
+        ax[1].plot(ts, solution['pulse'], 'k')
+        ax[1].set_title(f"Pulse value")
+    elif test == 'delta':
+        ax[1].plot(ts, solution['delta'], 'k')
+        ax[1].set_title(f"Delta value")
+    else:
+        raise Exception('test var not set correctly.')
 
     ax[2].plot(ts, solution['binary_state'], 'r')
     ax[2].set_title("Binary Output")
@@ -60,7 +69,7 @@ for interval in intervals:
                 return mav
         return miv
 
-    def rectangle_spikes_pulse(t, iv=interval, first=1000, length=200, miv=0, mav=0.1):
+    def rectangle_spikes_pulse(t, iv=interval, first=1000, length=200, miv=0, mav=0.05):
         spike_starts = [first, first + length + iv]
         for spike in spike_starts:
             t_max = spike + length
@@ -68,7 +77,11 @@ for interval in intervals:
                 return mav
         return miv
 
-    single_laser_test = LIFNeuron(delta_f=rectangle_spikes_delta)
+    if test == 'pulse':
+        single_laser_test = LIFNeuron(pulse_f=rectangle_spikes_pulse)
+    else :
+        single_laser_test = LIFNeuron(delta_f=rectangle_spikes_delta)
+
     test_simulation = runner.run_single_system_simulation(single_laser_test)
     solutions[interval] = test_simulation
 
