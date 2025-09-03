@@ -1,7 +1,4 @@
-from classes.neuron import LIFNeuron
-from utils import runner
 from utils.plots import load_and_plot, plot_neuron_solution_delta
-from utils.runner import store_solution_data
 
 filename = f'neuron_delta_sin_high_noise.csv'
 

@@ -3,8 +3,9 @@ import os
 import numpy as np
 import pandas as pd
 from numpy import multiply, add
-from utils import config
+
 from classes.laser import LaserSystem
+from utils import config
 from utils.config import RESULTS_DIRECTORY
 
 ITERATIONS_LOG = 5e4

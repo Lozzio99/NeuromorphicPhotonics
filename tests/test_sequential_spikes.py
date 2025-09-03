@@ -1,7 +1,7 @@
 from classes.neuron import LIFNeuron
 from utils import runner
 from utils.config import rectangle_spikes_delta, rectangle_spikes_pulse
-from utils.plots import load_and_plot, plot_neuron_solution, plot_neuron_solution_delta, plot_neuron_solution_pulse
+from utils.plots import load_and_plot, plot_neuron_solution_delta, plot_neuron_solution_pulse
 from utils.runner import store_solution_data
 
 filename = 'test_sequential_spikes_delta.csv'

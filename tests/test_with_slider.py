@@ -56,9 +56,10 @@ def plot_neuron_solution(solution: dict[object, list[float]]):
     canvas.draw()
 
 ## delta/pulse : (500, 1500, 100)
-## delta/pulse-sustained: (1500, 2500, 100)
-start = 1500
-end = 2500
+## delta-sustained: (1500, 2500, 100)
+## pulse-sustained: (1500, 2500, 100)
+start = 200
+end = 1200
 res = 100
 intervals = [i for i in range(start, end+1, res)]
 solutions = {}
@@ -73,7 +74,7 @@ for interval in intervals:
                 return mav
         return miv
 
-    def rectangle_spikes_pulse(t, iv=interval, first=1000, length=200, miv=0, mav=0.05):
+    def rectangle_spikes_pulse(t, iv=interval, first=1000, length=200, miv=0, mav=0.02):
         spike_starts = [first, first + length + iv]
         for spike in spike_starts:
             t_max = spike + length

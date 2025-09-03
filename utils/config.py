@@ -1,4 +1,5 @@
 import math
+
 from numpy import multiply, sqrt
 from numpy.random import normal
 
@@ -64,7 +65,5 @@ Xf = lambda e: (abs(e) ** 2)
 
 
 ## LIF MODEL
-sustained_spike_mode = True
-SUSTAINED_SPIKE_DURATION = 15e3
-
+sustained_spike_mode = False
 RESULTS_DIRECTORY = '../results/'
