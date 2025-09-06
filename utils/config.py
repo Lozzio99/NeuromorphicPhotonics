@@ -5,7 +5,7 @@ from numpy.random import normal
 
 # simulation parameters
 t0 = 0
-tf = 5000
+tf = 5e3
 dt = 0.1
 
 
@@ -59,6 +59,7 @@ GAUSSIAN_NOISE_3D = lambda: multiply(sigma, [normal(0, sqrt(dt)), 0, 0])
 
 # logarithmic amplifier function
 GXf = lambda x, pt: A * math.log(1 + (alpha * (x + pt)))
+nGXf = lambda x, pt: A * math.log(1 + (alpha * x)) + pt
 
 # electrical field magnitude function
 Xf = lambda e: (abs(e) ** 2)

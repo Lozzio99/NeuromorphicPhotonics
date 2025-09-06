@@ -27,6 +27,7 @@ def store_solution_data(solution, directory=RESULTS_DIRECTORY, filename='unknown
 
     # Convert the dictionary to a DataFrame
     df = pd.DataFrame(solution)
+    print(df)
 
     # Save the DataFrame to a CSV file
     filepath = os.path.join(directory, filename)
@@ -61,3 +62,19 @@ def run_single_system_simulation(system:LaserSystem, t0=config.t0, tf=config.tf,
 
     if save: store_solution_data(solution)
     return solution
+
+
+def multiple_runs_simulation(system:LaserSystem, running_f=run_single_system_simulation, n_runs=100, filter_vars:list[str]=None):
+    results = {}
+    for i in range(n_runs):
+        system.reset()
+        sim = running_f(system)
+        if filter_vars:
+            filtered = {}
+            for var in filter_vars:
+                filtered[var] = sim[var]
+            results[i] = filtered
+        else:
+            results[i] = sim
+
+    return results

@@ -6,7 +6,7 @@ from utils.config import Xf, INITIAL_STATE, sustained_spike_mode, PULSE_OFF, FIX
 
 class LIFNeuron(LaserSystem):
     def __init__(self, threshold=1.0, delta_f=FIXED_DELTA, pulse_f=PULSE_OFF, s_spk=sustained_spike_mode):
-        super().__init__(delta_f=delta_f, pulse_f=pulse_f)
+
         # LIF core1
         self.threshold = threshold
         self.spike_start = -np.inf
@@ -15,9 +15,8 @@ class LIFNeuron(LaserSystem):
 
         # Sustained spike behavior
         self.sustained_spike_mode = s_spk
+        super().__init__(delta_f=delta_f, pulse_f=pulse_f)
 
-        self.delta_f = delta_f
-        self.update(INITIAL_STATE(self.delta_f(t=0)), t=0)
 
     def update(self, state: list[complex], t: float):
         super().update(state, t)
@@ -53,7 +52,7 @@ class LIFNeuron(LaserSystem):
         return base_state
 
     def reset(self):
-        self.update(INITIAL_STATE(self.delta_f(t=0)), t=0)
+        super().reset()
         self.spike = False
         self.spike_start = -np.inf
         self.spike_history.clear()

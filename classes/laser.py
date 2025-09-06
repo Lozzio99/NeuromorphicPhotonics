@@ -1,26 +1,28 @@
 import numpy as np
 
-from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k, FIXED_DELTA, PULSE_OFF
+from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k, FIXED_DELTA, PULSE_OFF, nGXf
 
 
 class LaserSystem:
 
-    def __init__(self, initial_state=None, delta_f=FIXED_DELTA, pulse_f=PULSE_OFF):
+    def __init__(self, initial_state=None, delta_f=FIXED_DELTA, pulse_f=PULSE_OFF, amplifier_f=GXf):
         self.pulse_f = pulse_f
         self.delta_f = delta_f
-
-        self.delta = self.delta_f(t=t0)
-        self.pulse = self.pulse_f(t=t0)
+        self.ampli_f = amplifier_f
 
         if initial_state is None:
-            initial_state = INITIAL_STATE(self.delta)
+            initial_state = INITIAL_STATE(delta_f(t0))
 
         self.noise_f = GAUSSIAN_NOISE_3D
 
-        self.e = initial_state[0]       # complex component of the electrical field
-        self.x = Xf(self.e)             # x system variable
-        self.y = initial_state[1]       # y system variable
-        self.w = initial_state[2]       # w system variable
+        self.e = None
+        self.x = None
+        self.y = None
+        self.w = None
+        self.delta = None
+        self.pulse = None
+
+        self.update(initial_state, t0)
 
 
     def get_state_dict(self) -> dict:
@@ -46,6 +48,10 @@ class LaserSystem:
         self.pulse = self.pulse_f(t)
 
 
+    def reset(self):
+        self.update(INITIAL_STATE(self.delta), t0)
+
+
     def rate_equations(self, state:list[float], t=None) -> list[complex | float]:
         # System Equations for the rate of change
 
@@ -57,7 +63,7 @@ class LaserSystem:
         x = Xf(e)
         xy = x * y
         pt = self.pulse
-        gx = GXf(x, pt)
+        gx = self.ampli_f(x, pt)
         delta = self.delta
 
         # rate equations
