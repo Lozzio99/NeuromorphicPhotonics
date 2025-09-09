@@ -1,14 +1,14 @@
-from classes.laser import LaserSystem
+
 from classes.neuron import LIFNeuron
 from utils import runner
-from utils.plots import load_and_plot, plot_single_laser_solution, plot_neuron_solution_pulse, plot_neuron_solution
-from utils.runner import store_solution_data
+from utils.plots import plot_neuron_solution_pulse
+
 
 t1 = 500
 t2 = 600
 t3 = 700
 
-p = 0.35
+p = 0.4
 
 pos_pulse = lambda t: p if t1 < t < t2 else 0
 neg_pulse = lambda t: -p if t1 < t < t2 else 0

@@ -1,4 +1,7 @@
 import math
+import matplotlib
+
+matplotlib.use("TkAgg")
 
 from numpy import multiply, sqrt
 from numpy.random import normal

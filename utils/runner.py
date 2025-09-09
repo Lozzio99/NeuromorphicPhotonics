@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from numpy import multiply, add
 
 from classes.laser import LaserSystem
@@ -66,7 +67,7 @@ def run_single_system_simulation(system:LaserSystem, t0=config.t0, tf=config.tf,
 
 def multiple_runs_simulation(system:LaserSystem, running_f=run_single_system_simulation, n_runs=100, filter_vars:list[str]=None):
     results = {}
-    for i in range(n_runs):
+    for i in tqdm(range(n_runs)):
         system.reset()
         sim = running_f(system)
         if filter_vars:
