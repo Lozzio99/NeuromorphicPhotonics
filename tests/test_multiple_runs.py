@@ -1,6 +1,5 @@
 from classes.neuron import LIFNeuron
 from utils import runner
-from utils.runner import store_solution_data
 
 t1 = 500
 t2 = 600

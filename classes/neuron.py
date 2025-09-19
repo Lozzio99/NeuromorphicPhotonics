@@ -1,7 +1,7 @@
 import numpy as np
 
 from classes.laser import LaserSystem
-from utils.config import Xf, INITIAL_STATE, sustained_spike_mode, PULSE_OFF, FIXED_DELTA
+from utils.config import Xf, sustained_spike_mode, PULSE_OFF, FIXED_DELTA
 
 
 class LIFNeuron(LaserSystem):

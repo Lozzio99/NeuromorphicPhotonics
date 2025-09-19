@@ -2,8 +2,8 @@ import os
 
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 from numpy import multiply, add
+from tqdm import tqdm
 
 from classes.laser import LaserSystem
 from utils import config

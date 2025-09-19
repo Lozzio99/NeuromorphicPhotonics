@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k, FIXED_DELTA, PULSE_OFF, nGXf
+from utils.config import INITIAL_STATE, GAUSSIAN_NOISE_3D, Xf, GXf, t0, gamma, epsilon, k, FIXED_DELTA, PULSE_OFF
 
 
 class LaserSystem:

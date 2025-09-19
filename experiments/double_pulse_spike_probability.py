@@ -8,14 +8,22 @@ from utils import runner
 from utils.config import RESULTS_DIRECTORY
 from utils.plots import plot_pulse_shape_spike_probability
 
+t1 = 100
+tx = 0
+
+def pulse_f(length, strength):
+    t2 = t1 + length
+    t2x = t2 + tx
+    t3 = t2x + length
+
+    return lambda t: strength if t1<=t<t2 else -strength if t2x<=t<t3 else 0
+
+NEW_RUN = True
 length_range = np.arange(20, 301, 5)
 strength_range = np.arange(-0.5, 0.501, 0.025)
 
 num_runs = 100
-t1 = 100
-
-NEW_RUN = True
-filepath = os.path.join(RESULTS_DIRECTORY, f'spike_probability_by_pulse_{num_runs}_runs_2.csv')
+filepath = os.path.join(RESULTS_DIRECTORY, f'double_spike_{num_runs}_runs.csv')
 
 
 def run_new_data(lr, sr):
@@ -26,10 +34,10 @@ def run_new_data(lr, sr):
     }
 
     loaded['strength'] = loaded['strength'].map(lambda x: round(x, 3))
-
     for length in lr:
         for strength in sr:
             strength = round(strength, 3)
+
             loaded_ = loaded.loc[(loaded['strength'] == strength) & (loaded['length'] == length)]
             if len(loaded_) > 0:
                 # print(f'looking for strength {strength} and length {length}')
@@ -37,12 +45,9 @@ def run_new_data(lr, sr):
             else:
                 if (abs(strength) == 0) | (abs(length) == 0):
                     # print('skipping 0 pulse')
-
                     spike_probability = 0
                 else:
-                    pos_pulse = lambda t: strength if t1 < t < t1+length else 0
-
-                    single_neuron = LIFNeuron(pulse_f=pos_pulse)
+                    single_neuron = LIFNeuron(pulse_f=pulse_f(length, strength))
                     runs = runner.multiple_runs_simulation(single_neuron, n_runs=num_runs, filter_vars=['binary_state'])
 
                     spikes = [1 if sum(runs[i]['binary_state']) > 0 else 0 for i in runs]
@@ -69,7 +74,6 @@ def save(results):
             xv = 0
         return xv
 
-    print('Here')
     saved["strength"] = saved["strength"].map("{:.3f}".format).map(map0)
     saved.to_csv(filepath, index=False)
     return saved
@@ -83,7 +87,11 @@ def load_results(fp=filepath):
     return pd.read_csv(fp)
 
 
-loaded = load_results()
+try:
+    loaded = load_results()
+except FileNotFoundError as e:
+    loaded = None
+
 
 if NEW_RUN:
     new_data = run_new_data(length_range, strength_range)

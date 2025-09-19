@@ -1,5 +1,6 @@
+import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, cm
 
 from utils.config import RESULTS_DIRECTORY
 
@@ -57,3 +58,35 @@ def load_and_plot(filename, plot_f, directory=RESULTS_DIRECTORY):
     loaded = pd.read_csv(directory + filename)
     reshaped = loaded.to_dict('list')
     plot_f(reshaped)
+
+
+def plot_pulse_shape_spike_probability(df):
+    pivot_df = df.pivot(index='strength', columns='length', values='spike_probability')
+
+    Y, X = np.meshgrid(pivot_df.columns, pivot_df.index)
+    Z = pivot_df.values
+
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Create surface plot
+    surf = ax.plot_surface(
+        X, Y, Z,
+        cmap=cm.coolwarm,
+        vmin=0, vmax=1,  # force colorbar limits between 0 and 1
+        linewidth=0, antialiased=True
+    )
+
+    # Add colorbar
+    cbar = fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
+    cbar.set_label('Spike Probability (0-1)')
+
+    # Labels
+    ax.set_ylabel('Pulse Length')
+    ax.set_xlabel('Pulse Strength')
+    ax.set_zlabel('Spike Probability')
+
+    ax.view_init(elev=30, azim=260)
+
+    plt.tight_layout()
+    plt.show()
