@@ -9,7 +9,7 @@ from numpy.random import normal
 
 # simulation parameters
 t0 = 0
-tf = 5e3
+tf = 1e4
 dt = 0.1
 
 
@@ -72,3 +72,4 @@ Xf = lambda e: (abs(e) ** 2)
 ## LIF MODEL
 sustained_spike_mode = False
 RESULTS_DIRECTORY = '../results/'
+GIFS_DIRECTORY = '../gifs/'

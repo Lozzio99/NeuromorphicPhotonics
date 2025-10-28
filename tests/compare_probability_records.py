@@ -5,20 +5,24 @@ import pandas as pd
 
 from utils.config import RESULTS_DIRECTORY
 
-fp1 = os.path.join(RESULTS_DIRECTORY, f'spike_probability_by_pulse_100_runs_2.csv')
-fp2 = os.path.join(RESULTS_DIRECTORY, f'double_spike_100_runs.csv')
+fp1 = os.path.join(RESULTS_DIRECTORY, f'spike_probability_by_pulse_10_runs.csv')
+fp2 = os.path.join(RESULTS_DIRECTORY, f'double_spike_10_runs.csv')
 
 data1 = pd.read_csv(fp1)
 data2 = pd.read_csv(fp2)
 
+print(data1, data2)
 high_threshold = 0.8
 low_threshold = 0.2
 
 merged = pd.merge(data1, data2, on=['length', 'strength'], suffixes=('_single', '_double')).dropna()
+print(merged)
+
 
 unique_lengths = merged['length'].unique()
 unique_strengths = merged['strength'].unique()
 
+print(unique_lengths, unique_strengths)
 results = []
 
 for L in unique_lengths:
@@ -66,9 +70,10 @@ scatter = plt.scatter(merged['strength'],
                       c=merged['prob_diff'],
                       cmap='coolwarm', s=50)
 
-# Highlight the points that meet condition
-plt.scatter(results_df['strength'], results_df['length'],
-            facecolors='none', edgecolors='black', s=120, label=f"single >{high_threshold} & double <{low_threshold}")
+if not results_df.empty:
+    # Highlight the points that meet condition
+    plt.scatter(results_df['strength'], results_df['length'],
+                facecolors='none', edgecolors='black', s=120, label=f"single >{high_threshold} & double_pulse <{low_threshold}")
 
 plt.colorbar(scatter, label='Pulse Input Comparison Spike Probability Difference (Single - Double)')
 plt.xlabel("Strength")
@@ -83,3 +88,9 @@ plt.show()
 # phase space
 # more range
 # logical gates
+
+##
+# run again big plot (double-single) with 4 lasers
+# bigger interval range (improve plot)
+# bigger gates - binary output as pulse for next cycle
+# write something about the pulse response thing (pos vs neg)

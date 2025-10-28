@@ -46,8 +46,8 @@ def run_single_system_simulation(system:LaserSystem, t0=config.t0, tf=config.tf,
 
     i = 1
     while i < len(time_sequence) and t <= tf:
-        if i % ITERATIONS_LOG == 0:
-            print(f"Iteration {i}/{len(time_sequence)}")
+        # if i % ITERATIONS_LOG == 0:
+        #     print(f"Iteration {i}/{len(time_sequence)}")
 
         t1 = time_sequence[i]
         h = t1 - t
@@ -79,3 +79,5 @@ def multiple_runs_simulation(system:LaserSystem, running_f=run_single_system_sim
             results[i] = sim
 
     return results
+
+
