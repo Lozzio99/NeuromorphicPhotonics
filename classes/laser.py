@@ -11,7 +11,7 @@ class LaserSystem:
         self.ampli_f = amplifier_f
 
         if initial_state is None:
-            initial_state = INITIAL_STATE(delta_f(t0))
+            self.initial_state = INITIAL_STATE(delta_f(t0))
 
         self.noise_f = GAUSSIAN_NOISE_3D
 
@@ -27,10 +27,11 @@ class LaserSystem:
 
     def get_state_dict(self) -> dict:
         return {
-            'e': self.e,
+            'e0': self.e,
+            'x0': self.x.real,
+            'y0': self.y.real,
+            'w0': self.w.real,
             'x': self.x.real,
-            'y': self.y.real,
-            'w': self.w.real,
             'delta': self.delta,
             'pulse': self.pulse,
         }
@@ -49,7 +50,7 @@ class LaserSystem:
 
 
     def reset(self):
-        self.update(INITIAL_STATE(self.delta), t0)
+        self.update(INITIAL_STATE(self.delta_f(t0)), t0)
 
 
     def rate_equations(self, state:list[float], t=None) -> list[complex | float]:

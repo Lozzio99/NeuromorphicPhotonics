@@ -16,9 +16,9 @@ def plot_single_laser_solution(solution:dict[object, list[float]]):
     plt.figure()
 
     ts = solution['t']
-    plt.plot(ts, solution['x'], 'r')
-    plt.plot(ts, solution['y'], 'g')
-    plt.plot(ts, solution['w'], 'b')
+    plt.plot(ts, solution['x0'], 'r')
+    plt.plot(ts, solution['y0'], 'g')
+    plt.plot(ts, solution['w0'], 'b')
 
     plt.xlabel('t')
 
@@ -28,19 +28,48 @@ def plot_single_laser_solution(solution:dict[object, list[float]]):
     plt.tight_layout()
     plt.show()
 
+def plot_multi_iris_laser_solution(solution:dict[object, list[float]]):
+    plt.figure()
+    ts = solution['t']
+
+    found = True
+    i = 0
+    while found:
+        xkey = f'x{i}'
+
+        if xkey in solution.keys():
+            plt.plot(ts, solution[xkey], '--b', linewidth=0.2)
+        else:
+            found = False
+
+        i += 1
+
+    plt.plot(ts, solution['x'], '-k', linewidth=1.5)
+    plt.show()
+
+
+
 def plot_neuron_solution(solution:dict[object, list[float]], input_val:str):
     assert input_val is not None
 
     ts = solution['t']
     fig, ax = plt.subplots(3, 1, sharex=True, height_ratios=[0.7, 0.15, 0.15])
 
-    ax[0].plot(ts, solution['x'], 'r')
-    ax[0].plot(ts, solution['y'], 'g')
-    ax[0].plot(ts, solution['w'], 'b')
+    found = True
+    xs = 0
+    while found:
+        xkey = f'x{xs}'
 
+        if xkey in solution.keys():
+            ax[0].plot(ts, solution[xkey], '--b', linewidth=0.2)
+            xs += 1
+        else:
+            found = False
+
+    ax[0].plot(ts, solution['x'], '-k', linewidth=1.5)
     ax[0].set_xlabel("t")
 
-    ax[0].legend(["x(t)", "y(t)", "w(t)"], loc='upper right')
+    ax[0].legend([f"x{i}(t)" for i in range(xs)] + ["X(t)"], loc='upper right')
     ax[0].set_title('Single Laser System Variables Solution')
 
     ax[1].plot(ts, solution[input_val], 'k')

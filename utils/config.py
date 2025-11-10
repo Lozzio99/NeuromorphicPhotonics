@@ -9,7 +9,7 @@ from numpy.random import normal
 
 # simulation parameters
 t0 = 0
-tf = 1e4
+tf = 5e3
 dt = 0.1
 
 

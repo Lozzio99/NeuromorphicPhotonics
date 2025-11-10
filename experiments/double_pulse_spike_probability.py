@@ -10,7 +10,7 @@ from utils import runner
 from utils.config import RESULTS_DIRECTORY
 from utils.plots import plot_pulse_shape_spike_probability
 
-t1 = 1100
+t1 = 1000
 tx = 0
 
 def pulse_f(length, strength):
@@ -20,11 +20,12 @@ def pulse_f(length, strength):
 
     return lambda t: strength if t1<=t<t2 else -strength if t2x<=t<t3 else 0
 
-length_range = np.arange(50, 301, 5)
-strength_range = np.arange(-0.5, 0.501, 0.1)
+length_range = np.arange(20, 151, 20)
+strength_range = np.arange(-0.3, 0.301, 0.05)
 
-num_runs = 10
-filepath = os.path.join(RESULTS_DIRECTORY, f'double_spike_{num_runs}_runs.csv')
+num_runs = 100
+n_iris = 4
+filepath = os.path.join(RESULTS_DIRECTORY, f'double_spike_{n_iris}_iris_{num_runs}_runs.csv')
 
 
 def run_remaining():
@@ -37,7 +38,7 @@ def run_remaining():
             if len(loaded_) > 0:
                 spike_probability = loaded_['spike_probability'].values[0]
             else:
-                single_neuron = LIFNeuron(pulse_f=pulse_f(length, strength))
+                single_neuron = LIFNeuron(pulse_f=pulse_f(length, strength), n_iris=n_iris)
                 runs = runner.multiple_runs_simulation(single_neuron, n_runs=num_runs, filter_vars=['binary_state'])
 
                 spikes = [1 if sum(runs[i]['binary_state']) > 0 else 0 for i in runs]
